@@ -1,0 +1,50 @@
+﻿@model MedEquipStore.Models.Category
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="page-heading">
+    <h1>Edit Category</h1>
+</div>
+
+<div class="form-card">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input type="hidden" asp-for="CategoryId" />
+        <input type="hidden" asp-for="ImageUrl" />
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Category Image</label>
+            <input type="file" name="imageFile" class="form-control" accept="image/*" />
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="mt-2">
+                    <img src="@Model.ImageUrl" alt="Current image" style="max-width: 120px; border-radius: 4px; border: 1px solid var(--color-border);" />
+                    <div class="text-muted" style="font-size: 0.8rem;">Current image — upload a new one to replace it</div>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

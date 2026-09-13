@@ -1,0 +1,36 @@
+﻿@model MedEquipStore.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="page-heading">
+    <h1>@Model.Name</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-primary btn-sm">Edit</a>
+        <a asp-action="Index" class="btn btn-link btn-sm text-muted">Back to Catalog</a>
+    </div>
+</div>
+<div class="mb-4">
+    <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image-placeholder.svg" : Model.ImageUrl)"
+         alt="@Model.Name" style="max-width: 320px; width: 100%; border-radius: 6px; border: 1px solid var(--color-border);" />
+</div>
+
+<div class="form-card">
+    <dl class="row mb-0">
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Part Number</dt>
+        <dd class="col-sm-9 product-partno">@Model.PartNumber</dd>
+
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Manufacturer</dt>
+        <dd class="col-sm-9">@Model.Manufacturer</dd>
+
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Price</dt>
+        <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Stock</dt>
+        <dd class="col-sm-9">@Model.StockQuantity units</dd>
+
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+    </dl>
+</div>

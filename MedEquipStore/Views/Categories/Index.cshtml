@@ -1,0 +1,56 @@
+﻿@model IEnumerable<MedEquipStore.Models.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="page-heading">
+    <h1>Categories</h1>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-primary btn-sm">Add Category</a>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No categories yet.</p>
+}
+else
+{
+    <table class="catalog-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td style="width: 56px;">
+                        <img src="@(string.IsNullOrEmpty(category.ImageUrl) ? "/images/no-image-placeholder.svg" : category.ImageUrl)"
+                             alt="@category.Name" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);" />
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@category.CategoryId" class="product-name" style="text-decoration:none;">
+                            @category.Name
+                        </a>
+                    </td>
+                    <td class="text-muted">@category.Description</td>
+                    <td class="text-end">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@category.CategoryId" class="text-muted" style="text-decoration:none; font-size:0.85rem;">Edit</a>
+                            <span>&nbsp;·&nbsp;</span>
+                            <a asp-action="Delete" asp-route-id="@category.CategoryId" class="text-muted" style="text-decoration:none; font-size:0.85rem;">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

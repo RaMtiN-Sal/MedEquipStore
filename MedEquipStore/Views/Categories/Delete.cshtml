@@ -1,0 +1,58 @@
+﻿@model MedEquipStore.Models.Category
+
+@{
+    ViewData["Title"] = "Delete Category";
+    var productCount = Model.Products.Count;
+}
+
+<div class="page-heading">
+    <h1>Delete Category</h1>
+</div>
+
+<div class="form-card">
+    <dl class="row mb-4">
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Category</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+    </dl>
+
+    @if (productCount == 0)
+    {
+        <div class="delete-warning">
+            This action can't be undone. This category has no products, so it's safe to delete.
+        </div>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="CategoryId" />
+            <button type="submit" class="btn" style="background-color:var(--color-danger); color:white;">Delete Category</button>
+            <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
+        </form>
+    }
+    else
+    {
+        <div class="delete-warning">
+            This category has <strong>@productCount product@(productCount == 1 ? "" : "s")</strong> assigned to it.
+            Choose how to proceed — both actions are permanent.
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="CategoryId" />
+                <button type="submit" class="btn btn-outline-secondary">
+                    Delete Category Only <span class="text-muted" style="font-weight:400;">(products become uncategorized)</span>
+                </button>
+            </form>
+
+            <form asp-action="DeleteWithProducts" method="post">
+                <input type="hidden" asp-for="CategoryId" />
+                <button type="submit" class="btn" style="background-color:var(--color-danger); color:white;">
+                    Delete Category + All @productCount Product@(productCount == 1 ? "" : "s")
+                </button>
+            </form>
+
+            <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
+        </div>
+    }
+</div>

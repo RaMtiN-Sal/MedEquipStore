@@ -1,0 +1,161 @@
+:root {
+    --color-ink: #0F2438;
+    --color-steel: #1D4E6B;
+    --color-steel-dark: #163C54;
+    --color-bg: #F5F7F9;
+    --color-surface: #FFFFFF;
+    --color-border: #DCE3E8;
+    --color-muted: #5A6B78;
+    --color-danger: #A6362C;
+    --color-danger-bg: #FBECEA;
+}
+
+body {
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-size: 15px;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-ink) !important;
+}
+
+.site-header {
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.9rem 0;
+}
+
+.site-nav a {
+    color: var(--color-muted);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.92rem;
+    margin-left: 1.5rem;
+}
+
+    .site-nav a:hover, .site-nav a.active {
+        color: var(--color-steel);
+    }
+
+.btn-primary {
+    background-color: var(--color-steel);
+    border-color: var(--color-steel);
+    font-weight: 500;
+}
+
+    .btn-primary:hover {
+        background-color: var(--color-steel-dark);
+        border-color: var(--color-steel-dark);
+    }
+
+.page-heading {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1rem;
+    margin-bottom: 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+    .page-heading h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+/* Product catalog table */
+.catalog-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+}
+
+    .catalog-table th {
+        text-align: left;
+        font-weight: 500;
+        font-size: 0.82rem;
+        color: var(--color-muted);
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .catalog-table td {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+        vertical-align: middle;
+    }
+
+    .catalog-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .catalog-table tr:hover {
+        background-color: var(--color-bg);
+    }
+
+.product-name {
+    font-weight: 500;
+    color: var(--color-ink);
+}
+
+.product-partno {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--color-muted);
+}
+
+.stock-pill {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.stock-in {
+    background: #E5F1E8;
+    color: #276B3E;
+}
+
+.stock-low {
+    background: #FCF1DC;
+    color: #94660B;
+}
+
+.stock-out {
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+/* Forms */
+.form-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 2rem;
+    max-width: 640px;
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 0.88rem;
+    color: var(--color-ink);
+}
+
+.form-control:focus {
+    border-color: var(--color-steel);
+    box-shadow: 0 0 0 3px rgba(29, 78, 107, 0.12);
+}
+
+.delete-warning {
+    background: var(--color-danger-bg);
+    border: 1px solid #EFCAC5;
+    color: var(--color-danger);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.92rem;
+}

@@ -1,0 +1,32 @@
+﻿@model MedEquipStore.Models.Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<div class="page-heading">
+    <h1>Delete Product</h1>
+</div>
+
+<div class="form-card">
+    <div class="delete-warning">
+        This action can't be undone. The product will be permanently removed.
+    </div>
+
+    <dl class="row mb-4">
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Product</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Part Number</dt>
+        <dd class="col-sm-9 product-partno">@Model.PartNumber</dd>
+
+        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Price</dt>
+        <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="ProductId" />
+        <button type="submit" class="btn" style="background-color:var(--color-danger); color:white;">Delete Product</button>
+        <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
+    </form>
+</div>
