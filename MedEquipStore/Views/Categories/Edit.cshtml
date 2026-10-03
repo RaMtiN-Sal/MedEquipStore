@@ -1,46 +1,112 @@
 ﻿@model MedEquipStore.Models.Category
 
 @{
-    ViewData["Title"] = "Edit Category";
+    ViewData["Title"] = "ویرایش دسته‌بندی";
 }
 
-<div class="page-heading">
-    <h1>Edit Category</h1>
-</div>
+<div class="edit-page">
 
-<div class="form-card">
-    <form asp-action="Edit" method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-        <input type="hidden" asp-for="CategoryId" />
-        <input type="hidden" asp-for="ImageUrl" />
+    <div class="details-header">
 
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+        <div>
+            <a asp-action="Index" class="details-back">
+                <i class="bi bi-arrow-right"></i>
+                بازگشت به دسته‌بندی‌ها
+            </a>
+
+            <h1>ویرایش دسته‌بندی</h1>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+    </div>
 
-        <div class="mb-4">
-            <label class="form-label">Category Image</label>
-            <input type="file" name="imageFile" class="form-control" accept="image/*" />
-            @if (!string.IsNullOrEmpty(Model.ImageUrl))
-            {
-                <div class="mt-2">
-                    <img src="@Model.ImageUrl" alt="Current image" style="max-width: 120px; border-radius: 4px; border: 1px solid var(--color-border);" />
-                    <div class="text-muted" style="font-size: 0.8rem;">Current image — upload a new one to replace it</div>
-                </div>
-            }
-        </div>
+    <div class="form-card">
 
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
-    </form>
+        <form asp-action="Edit"
+              method="post"
+              enctype="multipart/form-data"
+              autocomplete="off">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="CategoryId" />
+            <input type="hidden" asp-for="ImageUrl" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">
+                    نام دسته‌بندی
+                </label>
+
+                <input asp-for="Name"
+                       class="form-control"
+                       autocomplete="off" />
+
+                <span asp-validation-for="Name"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">
+                    توضیحات
+                </label>
+
+                <textarea asp-for="Description"
+                          class="form-control"
+                          rows="4"
+                          autocomplete="off"></textarea>
+
+                <span asp-validation-for="Description"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label">
+                    تصویر دسته‌بندی
+                </label>
+
+                <input type="file"
+                       name="imageFile"
+                       class="form-control"
+                       accept="image/*" />
+
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="current-image">
+
+                        <img src="@Model.ImageUrl"
+                             alt="@Model.Name" />
+
+                        <div>
+                            <strong>تصویر فعلی</strong>
+                            <span>
+                                برای جایگزینی، تصویر جدیدی انتخاب کنید.
+                            </span>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg"></i>
+                    ذخیره تغییرات
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-light">
+                    انصراف
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
 
 @section Scripts {

@@ -4,33 +4,146 @@
     ViewData["Title"] = Model.Name;
 }
 
-<div class="page-heading">
-    <h1>@Model.Name</h1>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.ProductId" class="btn btn-primary btn-sm">Edit</a>
-        <a asp-action="Index" class="btn btn-link btn-sm text-muted">Back to Catalog</a>
+<div class="product-details-page">
+
+    <div class="details-header">
+
+        <div>
+            <a asp-action="Index" class="details-back">
+                <i class="bi bi-arrow-right"></i>
+                بازگشت به محصولات
+            </a>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Edit"
+               asp-route-id="@Model.ProductId"
+               class="btn btn-primary">
+                <i class="bi bi-pencil"></i>
+                ویرایش محصول
+            </a>
+        }
+
     </div>
-</div>
-<div class="mb-4">
-    <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image-placeholder.svg" : Model.ImageUrl)"
-         alt="@Model.Name" style="max-width: 320px; width: 100%; border-radius: 6px; border: 1px solid var(--color-border);" />
-</div>
 
-<div class="form-card">
-    <dl class="row mb-0">
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Part Number</dt>
-        <dd class="col-sm-9 product-partno">@Model.PartNumber</dd>
 
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Manufacturer</dt>
-        <dd class="col-sm-9">@Model.Manufacturer</dd>
+    <div class="product-main-card">
 
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Price</dt>
-        <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+        <div class="product-details-image">
+            <img src="@(string.IsNullOrEmpty(Model.ImageUrl)
+                                 ? "/images/no-image-placeholder.svg"
+                                 : Model.ImageUrl)"
+                 alt="@Model.Name" />
+        </div>
 
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Stock</dt>
-        <dd class="col-sm-9">@Model.StockQuantity units</dd>
 
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Description</dt>
-        <dd class="col-sm-9">@Model.Description</dd>
-    </dl>
+        <div class="product-details-info">
+
+            <span class="product-details-label">
+                محصول پزشکی
+            </span>
+
+            <h1>@Model.Name</h1>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Manufacturer))
+            {
+                <div class="product-manufacturer">
+                    <span>تولیدکننده:</span>
+                    <strong>@Model.Manufacturer</strong>
+                </div>
+            }
+
+            <div class="product-details-divider"></div>
+
+
+            <div class="product-price-box">
+
+                <span>قیمت</span>
+
+                <div>
+                    <strong>
+                        @Model.Price.ToString("N0")
+                    </strong>
+                    <small>ریال</small>
+                </div>
+
+            </div>
+
+
+            <div class="product-stock-box">
+
+                @if (Model.StockQuantity > 0)
+                {
+                    <span class="stock-badge stock-available">
+                        <i class="bi bi-check-circle"></i>
+                        موجود در انبار
+                    </span>
+
+                    <span class="stock-quantity">
+                        @Model.StockQuantity عدد موجود
+                    </span>
+                }
+                else
+                {
+                    <span class="stock-badge stock-unavailable">
+                        <i class="bi bi-x-circle"></i>
+                        ناموجود
+                    </span>
+                }
+
+            </div>
+
+
+            <div class="product-meta">
+
+                <div>
+                    <span>شماره محصول</span>
+
+                    <strong class="product-partno">
+                        @Model.PartNumber
+                    </strong>
+                </div>
+
+                @if (Model.Category != null)
+                {
+                    <div>
+                        <span>دسته‌بندی</span>
+
+                        <a asp-controller="Categories"
+                           asp-action="Details"
+                           asp-route-id="@Model.Category.CategoryId">
+                            @Model.Category.Name
+                        </a>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <section class="product-description-card">
+
+        <div class="section-heading">
+            <h2>توضیحات محصول</h2>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Description))
+        {
+            <p>
+                @Model.Description
+            </p>
+        }
+        else
+        {
+            <p class="product-no-description">
+                توضیحی برای این محصول ثبت نشده است.
+            </p>
+        }
+
+    </section>
+
 </div>

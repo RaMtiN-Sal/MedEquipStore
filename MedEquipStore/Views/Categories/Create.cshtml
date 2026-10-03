@@ -1,36 +1,73 @@
 ﻿@model MedEquipStore.Models.Category
 
 @{
-    ViewData["Title"] = "Add Category";
+    ViewData["Title"] = "افزودن دسته‌بندی";
 }
 
 <div class="page-heading">
-    <h1>Add Category</h1>
+    <div>
+        <h1>افزودن دسته‌بندی</h1>
+        <p>یک دسته‌بندی جدید برای محصولات فروشگاه ایجاد کنید.</p>
+    </div>
 </div>
 
 <div class="form-card">
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <form asp-action="Create"
+          method="post"
+          enctype="multipart/form-data"
+          autocomplete="off">
+
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
         <div class="mb-3">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
+            <label asp-for="Name" class="form-label">نام دسته‌بندی</label>
+
+            <input asp-for="Name"
+                   class="form-control"
+                   autocomplete="off"
+                   placeholder="مثلاً تجهیزات پزشکی" />
+
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            <label asp-for="Description" class="form-label">توضیحات</label>
+
+            <textarea asp-for="Description"
+                      class="form-control"
+                      rows="4"
+                      autocomplete="off"
+                      placeholder="توضیح کوتاهی درباره این دسته‌بندی بنویسید..."></textarea>
+
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
         <div class="mb-4">
-            <label class="form-label">Category Image</label>
-            <input type="file" name="imageFile" class="form-control" accept="image/*" />
+            <label class="form-label">تصویر دسته‌بندی</label>
+
+            <input type="file"
+                   name="imageFile"
+                   class="form-control"
+                   accept="image/*" />
+
+            <div class="form-hint">
+                تصویر مناسب برای نمایش دسته‌بندی را انتخاب کنید.
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Save Category</button>
-        <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
+        <div class="form-actions">
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i>
+                ایجاد دسته‌بندی
+            </button>
+
+            <a asp-action="Index" class="btn btn-light">
+                انصراف
+            </a>
+
+        </div>
+
     </form>
 </div>
 

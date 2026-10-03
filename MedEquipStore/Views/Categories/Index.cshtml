@@ -1,56 +1,165 @@
 ﻿@model IEnumerable<MedEquipStore.Models.Category>
 
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "دسته‌بندی محصولات";
 }
 
-<div class="page-heading">
-    <h1>Categories</h1>
-    @if (User.IsInRole("Admin"))
+<div class="categories-page">
+
+    <!-- Header -->
+
+    <div class="categories-header">
+
+        <div>
+            <h1>دسته‌بندی محصولات</h1>
+
+            <p>
+                محصولات را بر اساس دسته‌بندی مشاهده کنید
+            </p>
+        </div>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create"
+               class="btn btn-primary">
+
+                <i class="bi bi-plus-lg"></i>
+                افزودن دسته‌بندی
+
+            </a>
+        }
+
+    </div>
+
+
+    @if (!Model.Any())
     {
-        <a asp-action="Create" class="btn btn-primary btn-sm">Add Category</a>
-    }
-</div>
+        <!-- Empty State -->
 
-@if (!Model.Any())
-{
-    <p class="text-muted">No categories yet.</p>
-}
-else
-{
-    <table class="catalog-table">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Name</th>
-                <th>Description</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+        <div class="empty-categories">
+
+            <i class="bi bi-grid"></i>
+
+            <h3>هنوز دسته‌بندی‌ای ثبت نشده</h3>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <p>
+                    اولین دسته‌بندی فروشگاه را ایجاد کنید.
+                </p>
+
+                <a asp-action="Create"
+                   class="btn btn-primary">
+
+                    افزودن دسته‌بندی
+
+                </a>
+            }
+
+        </div>
+    }
+    else
+    {
+        <!-- Categories Grid -->
+
+        <div class="categories-grid">
+
             @foreach (var category in Model)
             {
-                <tr>
-                    <td style="width: 56px;">
-                        <img src="@(string.IsNullOrEmpty(category.ImageUrl) ? "/images/no-image-placeholder.svg" : category.ImageUrl)"
-                             alt="@category.Name" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);" />
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@category.CategoryId" class="product-name" style="text-decoration:none;">
+                <article class="category-card">
+
+                    <!-- Image -->
+
+                    <a asp-action="Details"
+                       asp-route-id="@category.CategoryId"
+                       class="category-image-link">
+
+                        <div class="category-image">
+
+                            <img src="@(string.IsNullOrEmpty(category.ImageUrl)
+                                                                 ? "/images/no-image-placeholder.svg"
+                                                                 : category.ImageUrl)"
+                         alt="@category.Name"
+                         loading="lazy" />
+
+                        </div>
+
+                    </a>
+
+
+                    <!-- Content -->
+
+                    <div class="category-content">
+
+                        <a asp-action="Details"
+                           asp-route-id="@category.CategoryId"
+                           class="category-title">
+
                             @category.Name
+
                         </a>
-                    </td>
-                    <td class="text-muted">@category.Description</td>
-                    <td class="text-end">
-                        @if (User.IsInRole("Admin"))
+
+
+                @if (!string.IsNullOrWhiteSpace(category.Description))
                         {
-                            <a asp-action="Edit" asp-route-id="@category.CategoryId" class="text-muted" style="text-decoration:none; font-size:0.85rem;">Edit</a>
-                            <span>&nbsp;·&nbsp;</span>
-                            <a asp-action="Delete" asp-route-id="@category.CategoryId" class="text-muted" style="text-decoration:none; font-size:0.85rem;">Delete</a>
+                            <p class="category-description">
+                                @category.Description
+                            </p>
                         }
-                    </td>
-                </tr>
+                        else
+                        {
+                            <p class="category-description category-no-description">
+                                توضیحی برای این دسته‌بندی ثبت نشده است.
+                            </p>
+                        }
+
+
+                        <div class="category-footer">
+
+                            <a asp-controller="Products"
+                               asp-action="Index"
+                               asp-route-categoryId="@category.CategoryId"
+                               class="category-products-link">
+
+                                مشاهده محصولات
+
+                                <i class="bi bi-arrow-left"></i>
+
+                            </a>
+
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="category-admin-actions">
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@category.CategoryId"
+                                       title="ویرایش">
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@category.CategoryId"
+                                       title="حذف"
+                                       class="category-delete">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </a>
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </article>
             }
-        </tbody>
-    </table>
-}
+
+        </div>
+    }
+
+</div>

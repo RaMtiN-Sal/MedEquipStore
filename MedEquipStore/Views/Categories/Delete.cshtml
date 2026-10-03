@@ -1,58 +1,146 @@
 ﻿@model MedEquipStore.Models.Category
 
 @{
-    ViewData["Title"] = "Delete Category";
+    ViewData["Title"] = "حذف دسته‌بندی";
     var productCount = Model.Products.Count;
 }
 
-<div class="page-heading">
-    <h1>Delete Category</h1>
-</div>
+<div class="delete-page">
 
-<div class="form-card">
-    <dl class="row mb-4">
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Category</dt>
-        <dd class="col-sm-9">@Model.Name</dd>
+    <div class="details-header">
 
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Description</dt>
-        <dd class="col-sm-9">@Model.Description</dd>
-    </dl>
+        <div>
+            <a asp-action="Index" class="details-back">
+                <i class="bi bi-arrow-right"></i>
+                بازگشت به دسته‌بندی‌ها
+            </a>
 
-    @if (productCount == 0)
-    {
-        <div class="delete-warning">
-            This action can't be undone. This category has no products, so it's safe to delete.
+            <h1>حذف دسته‌بندی</h1>
         </div>
 
-        <form asp-action="Delete" method="post">
-            <input type="hidden" asp-for="CategoryId" />
-            <button type="submit" class="btn" style="background-color:var(--color-danger); color:white;">Delete Category</button>
-            <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
-        </form>
-    }
-    else
-    {
-        <div class="delete-warning">
-            This category has <strong>@productCount product@(productCount == 1 ? "" : "s")</strong> assigned to it.
-            Choose how to proceed — both actions are permanent.
+    </div>
+
+    <div class="delete-card">
+
+        <div class="delete-icon">
+            <i class="bi bi-trash"></i>
         </div>
 
-        <div class="d-flex gap-2 flex-wrap">
+        <div class="delete-header">
+            <h2>حذف «@Model.Name»</h2>
+            <p>
+                این عملیات می‌تواند غیرقابل بازگشت باشد.
+            </p>
+        </div>
+
+        <div class="delete-details">
+
+            <div>
+                <span>نام دسته‌بندی</span>
+                <strong>@Model.Name</strong>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <div>
+                    <span>توضیحات</span>
+                    <strong>@Model.Description</strong>
+                </div>
+            }
+
+            <div>
+                <span>تعداد محصولات</span>
+                <strong>@productCount محصول</strong>
+            </div>
+
+        </div>
+
+        @if (productCount == 0)
+        {
+            <div class="delete-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+
+                <span>
+                    این دسته‌بندی محصولی ندارد و می‌توانید آن را حذف کنید.
+                </span>
+            </div>
+
             <form asp-action="Delete" method="post">
-                <input type="hidden" asp-for="CategoryId" />
-                <button type="submit" class="btn btn-outline-secondary">
-                    Delete Category Only <span class="text-muted" style="font-weight:400;">(products become uncategorized)</span>
-                </button>
-            </form>
 
-            <form asp-action="DeleteWithProducts" method="post">
                 <input type="hidden" asp-for="CategoryId" />
-                <button type="submit" class="btn" style="background-color:var(--color-danger); color:white;">
-                    Delete Category + All @productCount Product@(productCount == 1 ? "" : "s")
-                </button>
-            </form>
 
-            <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
-        </div>
-    }
+                <div class="delete-actions">
+
+                    <button type="submit"
+                            class="btn btn-danger-custom">
+                        <i class="bi bi-trash"></i>
+                        حذف دسته‌بندی
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-light">
+                        انصراف
+                    </a>
+
+                </div>
+
+            </form>
+        }
+        else
+        {
+            <div class="delete-warning delete-warning-danger">
+                <i class="bi bi-exclamation-triangle"></i>
+
+                <span>
+                    این دسته‌بندی دارای
+                    <strong>@productCount محصول</strong>
+                    است.
+                    انتخاب کنید که فقط دسته‌بندی حذف شود یا محصولات آن نیز حذف شوند.
+                </span>
+            </div>
+
+            <div class="delete-actions delete-actions-wrap">
+
+                <form asp-action="Delete" method="post">
+
+                    <input type="hidden" asp-for="CategoryId" />
+
+                    <button type="submit"
+                            class="btn btn-outline-danger-custom">
+                        <i class="bi bi-folder-x"></i>
+                        حذف فقط دسته‌بندی
+                    </button>
+
+                    <small>
+                        محصولات بدون دسته‌بندی باقی می‌مانند.
+                    </small>
+
+                </form>
+
+                <form asp-action="DeleteWithProducts" method="post">
+
+                    <input type="hidden" asp-for="CategoryId" />
+
+                    <button type="submit"
+                            class="btn btn-danger-custom">
+                        <i class="bi bi-trash3"></i>
+                        حذف دسته‌بندی و محصولات
+                    </button>
+
+                    <small>
+                        هر @productCount محصول نیز حذف خواهد شد.
+                    </small>
+
+                </form>
+
+                <a asp-action="Index"
+                   class="btn btn-light">
+                    انصراف
+                </a>
+
+            </div>
+        }
+
+    </div>
+
 </div>

@@ -1,132 +1,493 @@
 ﻿@model IEnumerable<MedEquipStore.Models.Product>
 
 @{
-    ViewData["Title"] = "Catalog";
+    ViewData["Title"] = "محصولات";
 }
 
-<div class="page-heading">
-    <h1>Product Catalog</h1>
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Create" class="btn btn-primary btn-sm">Add Product</a>
-    }
-</div>
-<form asp-action="Index" method="get" class="mb-4 d-flex gap-2 flex-wrap align-items-center">
-    <input type="text" name="searchTerm" value="@Context.Request.Query["searchTerm"]"
-           class="form-control" placeholder="Search by name..." style="max-width: 220px;" />
+<div class="products-page">
 
-    <select name="categoryId" class="form-select" style="max-width: 180px;">
-        <option value="">All Categories</option>
-        @foreach (var category in (List<MedEquipStore.Models.Category>)ViewBag.AllCategories)
+    <!-- Page Header -->
+    <div class="products-header">
+        <div>
+            <h1>محصولات</h1>
+            <p>محصولات تجهیزات پزشکی</p>
+        </div>
+
+        @if (User.IsInRole("Admin"))
         {
-            var selectedId = Context.Request.Query["categoryId"];
-            <option value="@category.CategoryId" selected="@(selectedId == category.CategoryId.ToString())">
-                @category.Name
-            </option>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                افزودن محصول
+            </a>
         }
-    </select>
+    </div>
 
-    <input type="number" name="minPrice" value="@Context.Request.Query["minPrice"]"
-           class="form-control" placeholder="Min $" style="max-width: 110px;" step="0.1" min="0" />
 
-    <input type="number" name="maxPrice" value="@Context.Request.Query["maxPrice"]"
-           class="form-control" placeholder="Max $" style="max-width: 110px;" step="0.1" min="0" />
+    <!-- Search & Filter Toolbar -->
+    <form asp-action="Index" method="get" class="products-toolbar">
+
+        <!-- Search -->
+        <div class="product-search">
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   name="searchTerm"
+                   value="@Context.Request.Query["searchTerm"]"
+                   placeholder="جستجوی نام محصول..." />
+        </div>
+
+
+        <div class="toolbar-actions">
+
+            <!-- Filter Button -->
+            <button type="button"
+                    class="filter-button"
+                    id="filterButton">
+
+                <i class="bi bi-funnel"></i>
+                فیلترها
+
+                <i class="bi bi-chevron-down filter-chevron"></i>
+            </button>
+
+
+            <!-- Sort -->
+            @{
+                var currentSort = Context.Request.Query["sortOrder"].ToString();
+            }
+
+            <select name="sortOrder"
+                    class="sort-select"
+                    onchange="this.form.submit()">
+
+                <option value="" selected="@(currentSort == "")">
+                    مرتب‌سازی
+                </option>
+
+                <option value="price_asc"
+                        selected="@(currentSort == "price_asc")">
+                    ارزان‌ترین
+                </option>
+
+                <option value="price_desc"
+                        selected="@(currentSort == "price_desc")">
+                    گران‌ترین
+                </option>
+
+                <option value="stock_asc"
+                        selected="@(currentSort == "stock_asc")">
+                    کمترین موجودی
+                </option>
+
+                <option value="stock_desc"
+                        selected="@(currentSort == "stock_desc")">
+                    بیشترین موجودی
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Filter Panel -->
+        <div class="filter-panel" id="filterPanel">
+
+            <div class="filter-panel-header">
+                <div>
+                    <strong>فیلتر محصولات</strong>
+                    <span>محصولات موردنظر خود را پیدا کنید</span>
+                </div>
+
+                <button type="button"
+                        class="filter-close"
+                        id="filterClose">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+
+            <div class="filter-grid">
+
+                <!-- Category -->
+                <div class="filter-field">
+
+                    <label>دسته‌بندی</label>
+
+                    <select name="categoryId" class="form-select">
+
+                        <option value="">
+                            همه دسته‌بندی‌ها
+                        </option>
+
+                        @foreach (var category in
+                                                (List<MedEquipStore.Models.Category>)ViewBag.AllCategories)
+                        {
+                            var selectedId =
+                            Context.Request.Query["categoryId"];
+
+                            <option value="@category.CategoryId"
+                                    selected="@(selectedId == category.CategoryId.ToString())">
+
+                                @category.Name
+
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <!-- Min Price -->
+                <div class="filter-field">
+
+                    <label>حداقل قیمت</label>
+
+                    <div class="price-input">
+
+                        <input type="number"
+                               name="minPrice"
+                               value="@Context.Request.Query["minPrice"]"
+                               placeholder="حداقل"
+                               min="0"
+                               step="1" />
+
+                        <span>ریال</span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Max Price -->
+                <div class="filter-field">
+
+                    <label>حداکثر قیمت</label>
+
+                    <div class="price-input">
+
+                        <input type="number"
+                               name="maxPrice"
+                               value="@Context.Request.Query["maxPrice"]"
+                               placeholder="حداکثر"
+                               min="0"
+                               step="1" />
+
+                        <span>ریال</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-check-lg"></i>
+                    اعمال فیلتر
+
+                </button>
+
+                <a asp-action="Index"
+                   class="clear-filters">
+
+                    پاک کردن فیلترها
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
 
     @{
-        var currentSort = Context.Request.Query["sortOrder"].ToString();
-    }
-    <select name="sortOrder" class="form-select" style="max-width: 180px;">
-        <option value="" selected="@(currentSort == "")">Sort: Name</option>
-        <option value="price_asc" selected="@(currentSort == "price_asc")">Price: Low to High</option>
-        <option value="price_desc" selected="@(currentSort == "price_desc")">Price: High to Low</option>
-        <option value="stock_asc" selected="@(currentSort == "stock_asc")">Stock: Low to High</option>
-        <option value="stock_desc" selected="@(currentSort == "stock_desc")">Stock: High to Low</option>
-    </select>
-
-    <button type="submit" class="btn btn-primary">Apply</button>
-    <a asp-action="Index" class="btn btn-link text-muted">Clear</a>
-</form>
-@{
-    bool hasAnyFilter = !string.IsNullOrEmpty(Context.Request.Query["searchTerm"])
+        bool hasAnyFilter =
+        !string.IsNullOrEmpty(Context.Request.Query["searchTerm"])
         || !string.IsNullOrEmpty(Context.Request.Query["categoryId"])
         || !string.IsNullOrEmpty(Context.Request.Query["minPrice"])
         || !string.IsNullOrEmpty(Context.Request.Query["maxPrice"]);
-}
+    }
 
-@if (!Model.Any() && hasAnyFilter)
-{
-    <p class="text-muted">No products match your filters. <a asp-action="Index">Clear filters</a></p>
-}
-else if (!Model.Any() && User.IsInRole("Admin"))
-{
-    <p class="text-muted">No products yet. <a asp-action="Create">Add your first product.</a></p>
-}
-else if (!Model.Any())
-{
-    <p class="text-muted">No products found.</p>
-}
-else
-{
-    <table class="catalog-table">
-        <thead>
-            <tr>
-                <th></th>
-				<th>Product</th>
-				<th>Category</th>
-                <th>Part No.</th>
-                <th>Manufacturer</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model)
-            {
-                <tr>
-                    <td style="width: 56px;">
-                        <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/no-image-placeholder.svg" : product.ImageUrl)"
-                             alt="@product.Name" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);" />
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@product.ProductId" class="product-name" style="text-decoration:none;">
-                            @product.Name
-                        </a>
-                    </td>
-                    <td>
+
+    <!-- Empty States -->
+    @if (!Model.Any() && hasAnyFilter)
+    {
+        <div class="empty-products">
+
+            <i class="bi bi-search"></i>
+
+            <h3>محصولی پیدا نشد</h3>
+
+            <p>
+                محصولی با این مشخصات پیدا نکردیم.
+            </p>
+
+            <a asp-action="Index"
+               class="btn btn-outline-primary">
+
+                پاک کردن فیلترها
+
+            </a>
+
+        </div>
+    }
+    else if (!Model.Any() && User.IsInRole("Admin"))
+    {
+        <div class="empty-products">
+
+            <i class="bi bi-box-seam"></i>
+
+            <h3>هنوز محصولی ثبت نشده</h3>
+
+            <p>
+                اولین محصول فروشگاه را اضافه کنید.
+            </p>
+
+            <a asp-action="Create"
+               class="btn btn-primary">
+
+                افزودن محصول
+
+            </a>
+
+        </div>
+    }
+    else if (!Model.Any())
+    {
+        <div class="empty-products">
+
+            <i class="bi bi-box-seam"></i>
+
+            <h3>محصولی پیدا نشد</h3>
+
+        </div>
+    }
+    else
+    {
+
+        <!-- Products -->
+
+        <div class="products-result-header">
+
+            <span>
+                محصولات
+            </span>
+
+            <span class="products-count">
+                @Model.Count() محصول
+            </span>
+
+        </div>
+
+
+        <div class="catalog-table-wrapper">
+
+            <table class="catalog-table">
+
+                <thead>
+
+                    <tr>
+                        <th></th>
+                        <th>محصول</th>
+                        <th>دسته‌بندی</th>
+                        <th>کد محصول</th>
+                        <th>تولیدکننده</th>
+                        <th>قیمت</th>
+                        <th>موجودی</th>
+                        <th></th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+
+                            <!-- Image -->
+
+                            <td class="product-image-cell">
+
+                                <img src="@(string.IsNullOrEmpty(product.ImageUrl)
+                                                                         ? "/images/no-image-placeholder.svg"
+                                                                         : product.ImageUrl)"
+                             alt="@product.Name"
+                             loading="lazy" />
+
+                            </td>
+
+
+                            <!-- Product -->
+
+                            <td>
+
+                                <a asp-action="Details"
+                                   asp-route-id="@product.ProductId"
+                                   class="product-name">
+
+                                    @product.Name
+
+                                </a>
+
+                            </td>
+
+
+                            <!-- Category -->
+
+                            <td>
+
                         @if (product.Category != null)
-                        {
-                            <span>@product.Category.Name</span>
-                        }
-                        else
-                        {
-                            <span class="text-muted">Uncategorized</span>
-                        }
-                    </td>
-                    <td><span class="product-partno">@product.PartNumber</span></td>
-                    <td>@product.Manufacturer</td>
-                    <td>@product.Price.ToString("C")</td>
-                    <td>
-                        @{
-                            var stockClass = product.StockQuantity == 0 ? "stock-out"
-                            : product.StockQuantity <= 5 ? "stock-low"
-                            : "stock-in";
-                            var stockLabel = product.StockQuantity == 0 ? "Out of stock"
-                            : product.StockQuantity <= 5 ? $"{product.StockQuantity} left"
-                            : $"{product.StockQuantity} in stock";
-                        }
-                        <span class="stock-pill @stockClass">@stockLabel</span>
-                    </td>
-                    <td class="text-end">
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a asp-action="Edit" asp-route-id="@product.ProductId" class="text-muted" style="text-decoration:none; font-size:0.85rem;">Edit</a>
-                            <span>&nbsp;·&nbsp;</span>
-                            <a asp-action="Delete" asp-route-id="@product.ProductId" class="text-muted" style="text-decoration:none; font-size:0.85rem;">Delete</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                                {
+                                    <span>
+                                        @product.Category.Name
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        بدون دسته‌بندی
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <!-- Part Number -->
+
+                            <td>
+
+                                <span class="product-partno">
+                                    @product.PartNumber
+                                </span>
+
+                            </td>
+
+
+                            <!-- Manufacturer -->
+
+                            <td>
+                                @product.Manufacturer
+                            </td>
+
+
+                            <!-- Price -->
+
+                            <td>
+
+                                <span class="product-price">
+
+                                    @product.Price.ToString("N0")
+                                    <small>ریال</small>
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Stock -->
+
+                            <td>
+
+                                @{
+                                    var stockClass =
+                                    product.StockQuantity == 0
+                                    ? "stock-out"
+                                    : product.StockQuantity <= 5
+                                    ? "stock-low"
+                                    : "stock-in";
+
+                                    var stockLabel =
+                                    product.StockQuantity == 0
+                                    ? "ناموجود"
+                                    : product.StockQuantity <= 5
+                                    ? $"{product.StockQuantity} عدد باقی‌مانده"
+                                    : $"{product.StockQuantity} عدد موجود";
+                                }
+
+                                <span class="stock-pill @stockClass">
+                                    @stockLabel
+                                </span>
+
+                            </td>
+
+
+                            <!-- Admin Actions -->
+
+                            <td class="product-actions-cell">
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a asp-action="Edit"
+                                       asp-route-id="@product.ProductId">
+
+                                        ویرایش
+
+                                    </a>
+
+                                    <span>·</span>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@product.ProductId">
+
+                                        حذف
+
+                                    </a>
+                                }
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    }
+
+</div>
+
+
+@section Scripts
+{
+    <script>
+
+        const filterButton =
+            document.getElementById("filterButton");
+
+        const filterPanel =
+            document.getElementById("filterPanel");
+
+        const filterClose =
+            document.getElementById("filterClose");
+
+
+        filterButton.addEventListener("click", function () {
+
+            filterPanel.classList.toggle("is-open");
+
+            filterButton.classList.toggle("is-active");
+
+        });
+
+
+        filterClose.addEventListener("click", function () {
+
+            filterPanel.classList.remove("is-open");
+
+            filterButton.classList.remove("is-active");
+
+        });
+
+    </script>
 }

@@ -4,68 +4,173 @@
     ViewData["Title"] = Model.Name;
 }
 
-<div class="page-heading">
-    <h1>@Model.Name</h1>
-    <div>
+<div class="category-details-page">
+
+    <div class="details-header">
+
+        <div>
+            <a asp-action="Index" class="details-back">
+                <i class="bi bi-arrow-right"></i>
+                بازگشت به دسته‌بندی‌ها
+            </a>
+
+            <h1>@Model.Name</h1>
+        </div>
+
         @if (User.IsInRole("Admin"))
         {
-            <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-primary btn-sm">Edit</a>
+            <a asp-action="Edit"
+               asp-route-id="@Model.CategoryId"
+               class="btn btn-primary">
+                <i class="bi bi-pencil"></i>
+                ویرایش دسته‌بندی
+            </a>
         }
-        <a asp-action="Index" class="btn btn-link btn-sm text-muted">Back to Categories</a>
-    </div>
-</div>
 
-<div class="d-flex gap-4 flex-wrap align-items-start">
-    <div class="form-card" style="flex: 0 0 300px;">
-        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image-placeholder.svg" : Model.ImageUrl)"
-             alt="@Model.Name" style="width: 100%; border-radius: 6px; border: 1px solid var(--color-border); margin-bottom: 1.25rem;" />
-
-        <dl class="row mb-0">
-            <dt class="col-sm-4 text-muted" style="font-weight:500; font-size:0.85rem;">Description</dt>
-            <dd class="col-sm-8">@Model.Description</dd>
-
-            <dt class="col-sm-4 text-muted" style="font-weight:500; font-size:0.85rem;">Products</dt>
-            <dd class="col-sm-8">@Model.Products.Count product(s)</dd>
-        </dl>
     </div>
 
-    <div style="flex: 1 1 400px;">
-        @if (Model.Products.Any())
-        {
-            <table class="catalog-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Product</th>
-                        <th>Part No.</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="category-details-layout">
+
+        <section class="category-info-card">
+
+            <div class="category-details-image">
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl)
+                                         ? "/images/no-image-placeholder.svg"
+                                         : Model.ImageUrl)"
+                     alt="@Model.Name" />
+            </div>
+
+            <div class="category-info-content">
+
+                <h2>@Model.Name</h2>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="category-details-description">
+                        @Model.Description
+                    </p>
+                }
+                else
+                {
+                    <p class="category-details-description category-no-description">
+                        توضیحی برای این دسته‌بندی ثبت نشده است.
+                    </p>
+                }
+
+                <div class="category-info-meta">
+
+                    <div>
+                        <span>تعداد محصولات</span>
+                        <strong>@Model.Products.Count</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="category-products-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>محصولات این دسته‌بندی</h2>
+                    <p>محصولات موجود در این دسته‌بندی</p>
+                </div>
+
+                <span class="product-count">
+                    @Model.Products.Count محصول
+                </span>
+
+            </div>
+
+
+            @if (Model.Products.Any())
+            {
+                <div class="category-products-list">
+
                     @foreach (var product in Model.Products)
                     {
-                        <tr>
-                            <td style="width: 56px;">
-                                <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/no-image-placeholder.svg" : product.ImageUrl)"
-                                     alt="@product.Name" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-border);" />
-                            </td>
-                            <td>
-                                <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="product-name" style="text-decoration:none;">
-                                    @product.Name
-                                </a>
-                            </td>
-                            <td><span class="product-partno">@product.PartNumber</span></td>
-                            <td>@product.Price.ToString("C")</td>
-                            <td>@product.StockQuantity</td>
-                        </tr>
+                        <a asp-controller="Products"
+                           asp-action="Details"
+                           asp-route-id="@product.ProductId"
+                           class="category-product-item">
+
+                            <div class="category-product-image">
+                                <img src="@(string.IsNullOrEmpty(product.ImageUrl)
+                                                                         ? "/images/no-image-placeholder.svg"
+                                                                         : product.ImageUrl)"
+                             alt="@product.Name"
+                             loading="lazy" />
+                    </div>
+
+                            <div class="category-product-info">
+
+                                <h3>@product.Name</h3>
+
+                                <span class="product-partno">
+                                    @product.PartNumber
+                                </span>
+
+                        @if (!string.IsNullOrWhiteSpace(product.Manufacturer))
+                                {
+                                    <span class="category-product-manufacturer">
+                                        @product.Manufacturer
+                                    </span>
+                                }
+
+                            </div>
+
+                            <div class="category-product-price">
+                                <strong>
+                                    @product.Price.ToString("N0")
+                                </strong>
+                                <small>ریال</small>
+                            </div>
+
+                            <div class="category-product-stock">
+
+                                @if (product.StockQuantity > 0)
+                                {
+                                    <span class="stock-badge stock-available">
+                                        موجود
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="stock-badge stock-unavailable">
+                                        ناموجود
+                                    </span>
+                                }
+
+                            </div>
+
+                            <i class="bi bi-chevron-left category-product-arrow"></i>
+
+                        </a>
                     }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p class="text-muted">No products in this category yet.</p>
-        }
+
+                </div>
+            }
+            else
+            {
+                <div class="empty-category-products">
+
+                    <i class="bi bi-box-seam"></i>
+
+                    <h3>هنوز محصولی در این دسته‌بندی نیست</h3>
+
+                    <p>
+                        در حال حاضر محصولی برای نمایش وجود ندارد.
+                    </p>
+
+                </div>
+            }
+
+        </section>
+
     </div>
+
 </div>

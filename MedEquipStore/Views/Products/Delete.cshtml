@@ -1,32 +1,123 @@
 ﻿@model MedEquipStore.Models.Product
 
 @{
-    ViewData["Title"] = "Delete Product";
+    ViewData["Title"] = "حذف محصول";
 }
 
-<div class="page-heading">
-    <h1>Delete Product</h1>
-</div>
+<div class="delete-page">
 
-<div class="form-card">
-    <div class="delete-warning">
-        This action can't be undone. The product will be permanently removed.
+    <div class="details-header">
+
+        <div>
+            <a asp-action="Index" class="details-back">
+                <i class="bi bi-arrow-right"></i>
+                بازگشت به محصولات
+            </a>
+
+            <h1>حذف محصول</h1>
+        </div>
+
     </div>
 
-    <dl class="row mb-4">
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Product</dt>
-        <dd class="col-sm-9">@Model.Name</dd>
+    <div class="delete-card">
 
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Part Number</dt>
-        <dd class="col-sm-9 product-partno">@Model.PartNumber</dd>
+        <div class="delete-icon">
+            <i class="bi bi-trash"></i>
+        </div>
 
-        <dt class="col-sm-3 text-muted" style="font-weight:500; font-size:0.85rem;">Price</dt>
-        <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
-    </dl>
+        <div class="delete-header">
+            <h2>حذف «@Model.Name»</h2>
 
-    <form asp-action="Delete" method="post">
-        <input type="hidden" asp-for="ProductId" />
-        <button type="submit" class="btn" style="background-color:var(--color-danger); color:white;">Delete Product</button>
-        <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
-    </form>
+            <p>
+                این عملیات غیرقابل بازگشت است و محصول برای همیشه حذف خواهد شد.
+            </p>
+        </div>
+
+        <div class="delete-product-preview">
+
+            <div class="delete-product-image">
+
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl)
+                                         ? "/images/no-image-placeholder.svg"
+                                         : Model.ImageUrl)"
+                     alt="@Model.Name" />
+
+            </div>
+
+            <div class="delete-product-info">
+
+                <strong>@Model.Name</strong>
+
+                <span>
+                    شماره محصول:
+                    @Model.PartNumber
+                </span>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Manufacturer))
+                {
+                    <span>
+                        تولیدکننده:
+                        @Model.Manufacturer
+                    </span>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="delete-details">
+
+            <div>
+                <span>قیمت</span>
+
+                <strong>
+                    @Model.Price.ToString("N0")
+                    <small>ریال</small>
+                </strong>
+            </div>
+
+            <div>
+                <span>موجودی</span>
+
+                <strong>
+                    @Model.StockQuantity عدد
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="delete-warning delete-warning-danger">
+
+            <i class="bi bi-exclamation-triangle"></i>
+
+            <span>
+                پس از حذف، این محصول برای همیشه از فروشگاه حذف خواهد شد.
+                این عملیات قابل بازگشت نیست.
+            </span>
+
+        </div>
+
+        <form asp-action="Delete" method="post">
+
+            <input type="hidden" asp-for="ProductId" />
+
+            <div class="delete-actions">
+
+                <button type="submit"
+                        class="btn btn-danger-custom">
+                    <i class="bi bi-trash"></i>
+                    حذف محصول
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-light">
+                    انصراف
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
 </div>
